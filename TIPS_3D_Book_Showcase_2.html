@@ -69,6 +69,7 @@
     transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ez);
   }
   nav.menu a:hover::after{transform:scaleX(1);transform-origin:left;}
+  nav.menu a sup{font-size:8px;color:var(--blue-deep);margin-right:5px;letter-spacing:.1em;font-family:"Avara",serif;}
   /* custom cursor */
   #cursor{
     position:fixed;left:0;top:0;z-index:99;pointer-events:none;mix-blend-mode:multiply;
@@ -80,35 +81,43 @@
     *:not(input):not(textarea):not(select){cursor:none!important;}
   }
   @media(hover:none){#cursor{display:none;}}
-  /* index title — bottom-left, never overlaps the centered book */
-  .idx-title{
-    position:fixed;left:40px;bottom:52px;z-index:9;
-    pointer-events:none;width:min(52vw,600px);
+  /* ===== hero type composition — giant KR behind the book, outline EN in front ===== */
+  .hero-kr{
+    position:fixed;left:3vw;top:50%;transform:translateY(-54%);z-index:0;
+    font-weight:800;font-size:clamp(110px,21vw,330px);line-height:1;
+    letter-spacing:-.05em;color:var(--ink);pointer-events:none;white-space:nowrap;
   }
-  .idx-title::before{content:"";display:block;width:56px;height:1px;background:var(--ink);opacity:.4;margin-bottom:26px;}
-  .idx-title h2{
-    font-weight:800;font-size:clamp(46px,7vw,116px);line-height:.93;
-    letter-spacing:-.035em;word-break:keep-all;
+  .hero-en{
+    position:fixed;right:4vw;bottom:13vh;z-index:2;pointer-events:none;
+    font-family:"Avara",serif;font-weight:700;text-transform:lowercase;
+    font-size:clamp(52px,7.5vw,122px);line-height:1;
+    color:transparent;-webkit-text-stroke:1.5px var(--blue-deep);
+    mix-blend-mode:multiply;white-space:nowrap;
   }
-  .idx-title h2 .tline{display:block;overflow:hidden;}
-  .idx-title h2 em{
-    font-family:"Avara",serif;font-weight:700;font-style:normal;color:var(--blue-deep);
-    font-size:.36em;letter-spacing:0;text-transform:lowercase;display:block;overflow:hidden;
-    margin:14px 0 0 4px;
+  @supports not (-webkit-text-stroke:1px black){.hero-en{color:var(--blue-deep);}}
+  .hero-meta{
+    position:fixed;left:40px;bottom:44px;z-index:9;pointer-events:none;width:min(70vw,320px);
   }
+  .hero-meta .lab{
+    font-family:"Futura PT",sans-serif;font-size:10px;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--blue-deep);
+    position:relative;padding-bottom:16px;margin-bottom:14px;
+  }
+  .hero-meta .lab::after{content:"";position:absolute;left:0;bottom:0;width:44px;height:1px;background:var(--ink);opacity:.35;}
+  .hero-meta p{
+    font-family:"Noto Sans KR",sans-serif;font-size:13px;line-height:1.85;
+    opacity:.7;word-break:keep-all;
+  }
+  .hero-meta p.din{animation:fin .8s var(--ez) .25s both;}
+  .tline{display:block;overflow:hidden;}
   .tin{display:inline-block;transform:translateY(115%);animation:tup .95s var(--ez) forwards;}
-  .tin2{animation-delay:.09s;}
+  .tin2{animation-delay:.1s;}
   @keyframes tup{to{transform:translateY(0);}}
-  .idx-title p{
-    font-family:"Noto Sans KR",sans-serif;font-weight:400;font-size:14.5px;
-    margin-top:20px;max-width:44ch;line-height:1.8;opacity:.72;word-break:keep-all;
-  }
-  .idx-title p.din{animation:fin .8s var(--ez) .2s both;}
-  @keyframes fin{from{opacity:0;transform:translateY(14px);}to{opacity:.72;transform:none;}}
-  /* portrait / narrow: move text to top, stop overlap with centered book */
+  @keyframes fin{from{opacity:0;transform:translateY(12px);}to{opacity:.7;transform:none;}}
   @media (max-aspect-ratio:1/1){
-    .idx-title{top:auto;bottom:64px;transform:none;left:32px;width:min(80vw,520px);}
-    .idx-title h2{font-size:clamp(34px,9vw,72px);}
+    .hero-kr{font-size:clamp(90px,26vw,180px);top:34%;left:6vw;}
+    .hero-en{font-size:clamp(38px,9vw,72px);bottom:18vh;right:6vw;}
+    .hero-meta{left:32px;bottom:40px;}
   }
   /* scroll spacer */
   #spacer{position:relative;z-index:0;}
@@ -238,6 +247,16 @@
   .pg-row .r-arrow{font-size:24px;justify-self:end;transform:translateX(-16px);opacity:0;transition:transform .55s var(--ez),opacity .55s;}
   .pg-row:hover{padding-left:28px;}
   .pg-row:hover .r-arrow{transform:none;opacity:1;}
+  a.pg-row{text-decoration:none;color:var(--ink);}
+  .pg-row.sm{padding:26px 0;}
+  .pg-row.sm .r-ko{font-size:clamp(22px,3.2vw,44px);font-weight:700;letter-spacing:-.02em;}
+  /* about manifesto + marquee */
+  .mani{font-weight:800;font-size:clamp(38px,5.6vw,86px);line-height:1.12;letter-spacing:-.03em;margin:18px 0 8px;word-break:keep-all;}
+  .mani em{font-style:normal;color:var(--blue-deep);}
+  .marq{overflow:hidden;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:13px 0;margin:26px 0 4px;}
+  .marq-in{display:flex;white-space:nowrap;width:max-content;animation:marq 22s linear infinite;}
+  .marq-in span{font-family:"Avara",serif;font-size:13px;letter-spacing:.28em;text-transform:uppercase;opacity:.55;padding-right:.28em;}
+  @keyframes marq{to{transform:translateX(-50%);}}
   /* ===== order builder ===== */
   .ord-wrap{display:grid;grid-template-columns:minmax(330px,440px) 1fr;gap:36px;padding:8px 40px 110px;max-width:1440px;width:100%;align-items:start;}
   .ord-form{display:flex;flex-direction:column;gap:26px;}
@@ -287,7 +306,6 @@
   @media(max-width:720px){
     nav.menu{gap:16px;}
     nav.menu a{font-size:10px;letter-spacing:.12em;}
-    .idx-title{max-width:70vw;}
     .dt-hero,.dt-portfolio,.pg-hero,.pg-cols,.ord-wrap,.pg-index{padding-left:24px;padding-right:24px;}
     .pg-row{grid-template-columns:44px 1fr 40px;}
     .pg-row .r-meta{display:none;}
@@ -313,16 +331,18 @@
       <svg viewBox="0 0 498 509" xmlns="http://www.w3.org/2000/svg" aria-label="TiPS"><g clip-path="url(#hgc)"><path d="M68.4924 346.157L7.77673 406.847L19.9105 418.975L80.6262 358.286H92.76L19.9105 479.641V491.77L32.0443 503.898H56.3352L80.6262 491.77L141.342 431.081L129.208 418.952L68.4924 479.641H56.3587L129.208 358.286V346.157L104.917 334.029L68.4924 346.157ZM129.185 261.211L117.051 285.491V297.62L141.342 309.748H153.476L165.609 285.468V273.339L141.319 261.211H129.185Z" fill="currentColor"/><path d="M490.387 328.57C481.205 323.653 471.648 319.954 461.646 317.401C451.667 314.873 442.087 313.608 432.928 313.608C423.113 313.608 414.212 315.083 406.271 318.034C398.33 320.984 391.607 325.105 386.126 330.42C380.645 335.735 376.381 342.127 373.36 349.573C370.338 357.018 368.815 365.33 368.815 374.485C368.815 383.64 370.244 391.226 373.125 397.197C375.983 403.167 379.755 408.131 384.416 412.041C389.077 415.975 394.395 419.113 400.368 421.501C406.341 423.866 412.431 426.043 418.662 428.01C423.909 429.813 428.36 431.452 432.038 432.927C435.715 434.402 438.713 435.994 441.009 437.703C443.305 439.413 444.944 441.309 445.928 443.346C446.912 445.407 447.404 447.818 447.404 450.581C447.404 455.17 445.483 459.244 441.641 462.85C437.8 466.456 431.944 468.259 424.073 468.259C417.21 468.259 410.23 466.713 403.202 463.599C396.152 460.485 389.031 455.756 381.839 449.364L361.203 488.137C381.183 502.045 402.874 508.999 426.275 508.999C437.566 508.999 447.685 507.477 456.61 504.457C465.534 501.437 473.053 497.175 479.191 491.696C485.328 486.217 489.989 479.638 493.198 471.935C496.384 464.255 497.977 455.662 497.977 446.156C497.977 432.084 494.323 420.658 487.038 411.924C479.753 403.167 468.251 396.167 452.534 390.945C448.599 389.634 444.64 388.417 440.634 387.269C436.629 386.122 433.021 384.764 429.836 383.219C426.65 381.673 424.073 379.824 422.106 377.693C420.138 375.562 419.154 372.87 419.154 369.592C419.154 364.839 421.122 360.999 425.057 358.048C428.992 355.098 434.052 353.623 440.283 353.623C445.202 353.623 450.262 354.653 455.509 356.69C460.756 358.751 465.979 361.888 471.226 366.15L490.387 328.593V328.57ZM251.202 442.48H279.686C300.487 442.48 316.392 437.071 327.448 426.277C338.504 415.483 344.033 400.264 344.033 380.62C344.033 360.975 338.504 345.756 327.448 334.962C316.392 324.168 300.463 318.76 279.686 318.76H203.065V503.848H251.202V442.48ZM251.202 357.533H267.154C284.839 357.533 293.67 365.237 293.67 380.596C293.67 395.956 284.839 403.659 267.154 403.659H251.202V357.51V357.533Z" fill="currentColor"/><path d="M74.3489 88.7162V147.626C74.3489 162.705 74.0678 177.549 73.4822 192.16C72.92 206.77 72.2875 221.17 71.6082 235.312C76.8553 234.844 82.4537 234.633 88.4034 234.633C94.3532 234.633 99.9282 234.867 105.199 235.312C104.519 221.147 103.887 206.77 103.301 192.16C102.739 177.549 102.435 162.705 102.435 147.626V88.7162C102.435 64.9742 102.786 41.326 103.465 17.8182C109.392 17.8182 115.622 17.8884 122.134 17.9821C128.646 18.0991 135.158 18.3333 141.67 18.6611C148.182 19.0123 154.46 19.4103 160.503 19.8552C166.547 20.3235 171.981 20.8854 176.783 21.5644C175.635 17.4435 175.073 13.908 175.073 10.9578C175.073 8.21836 175.635 4.56576 176.783 0C161.698 0.468283 146.964 0.842909 132.582 1.19412C118.199 1.54533 103.465 1.70923 88.38 1.70923C73.2948 1.70923 58.5609 1.54533 44.1784 1.19412C29.8193 0.866323 15.0855 0.468283 0.000244141 0C1.14803 4.56576 1.71022 8.10129 1.71022 10.6066C1.71022 13.8143 1.12461 17.467 0.000244141 21.5644C4.80222 20.8854 10.2132 20.3235 16.2801 19.8552C22.3236 19.4103 28.6247 18.9889 35.1366 18.6611C41.6486 18.3099 48.1605 18.0991 54.6725 17.9821C61.1844 17.865 67.4153 17.8182 73.3416 17.8182C74.0209 41.3494 74.3723 64.9742 74.3723 88.7162" fill="currentColor"/></g><defs><clipPath id="hgc"><rect width="498" height="509" fill="white"/></clipPath></defs></svg>
     </div>
     <nav class="menu">
-      <a data-page="about">About</a>
-      <a data-page="program">Program</a>
-      <a data-page="order">Order</a>
-      <a data-page="contact">Contact</a>
+      <a data-page="about"><sup>01</sup>About</a>
+      <a data-page="program"><sup>02</sup>Program</a>
+      <a data-page="order"><sup>03</sup>Order</a>
+      <a data-page="contact"><sup>04</sup>Contact</a>
     </nav>
   </header>
 
-  <div class="idx-title">
-    <h2 id="btitle">잇기<em>connecting</em></h2>
-    <p id="bdesc">낱장과 낱장을 이어 하나의 흐름으로 만드는 제본. 접고 이어 붙여 페이지가 끊기지 않고 연결됩니다.</p>
+  <div class="hero-kr" id="hkr"></div>
+  <div class="hero-en" id="hen"></div>
+  <div class="hero-meta">
+    <div class="lab" id="hlab"></div>
+    <p id="bdesc"></p>
   </div>
 
   <div id="spacer"></div>
@@ -616,14 +636,15 @@ function initInteractions(){
 const PAGES={
   about:{ed:"TIPS · ABOUT",html:`
     <div class="pg-hero">
-      <div class="pg-eyebrow">About · 세 얼간이의 종이 작업실</div>
-      <h1 class="pg-title">TiPS<em>paper service</em></h1>
-      <p class="pg-lead">TiPS(Three Idiots Paper Service)는 제본을 중심에 둔 작은 인쇄소입니다. 잇기·꿰기·묶기·풀기 — 네 가지 방식으로 종이를 엮는 제본 프로그램을 운영하고, 그 과정과 결과물을 워크샵과 아카이브로 나눕니다.</p>
+      <div class="pg-eyebrow">About — Three Idiots Paper Service</div>
+      <h1 class="mani">우리는 종이를<br><em>잇고, 꿰고, 묶고, 풀며</em><br>책을 만듭니다.</h1>
+      <p class="pg-lead">TiPS는 제본을 중심에 둔 작은 인쇄소입니다. 네 가지 방식의 제본 프로그램을 운영하고, 그 과정과 결과물을 워크샵과 아카이브로 나눕니다.</p>
     </div>
+    <div class="marq"><div class="marq-in"><span>Printing — Binding — Bookmaking — Workshop — Archive — Paper — </span><span>Printing — Binding — Bookmaking — Workshop — Archive — Paper — </span></div></div>
     <div class="pg-cols">
-      <div class="pg-card"><h4>Print Shop</h4><div class="big">작게, 그러나 끝까지</div><p>소량 인쇄와 제본을 한자리에서. 종이 선택부터 마지막 묶음까지 손으로 완성합니다.</p></div>
-      <div class="pg-card"><h4>Binding Program</h4><div class="big">네 가지 제본</div><p>잇기·꿰기·묶기·풀기. 이 네 가지 방식이 인쇄소를 지탱하는 뼈대이자, 모든 작업의 출발점입니다.</p></div>
-      <div class="pg-card"><h4>Workshop · Archive</h4><div class="big">만들고, 남기고</div><p>워크샵에서 만들어진 책들은 아카이브로 쌓여, 다음 실험과 다음 책의 참고가 됩니다.</p></div>
+      <div class="pg-card"><div class="no">01</div><div class="big">작게, 그러나 끝까지</div><p>소량 인쇄와 제본을 한자리에서. 종이 선택부터 마지막 묶음까지 손으로 완성합니다.</p></div>
+      <div class="pg-card"><div class="no">02</div><div class="big">네 가지 제본</div><p>잇기·꿰기·묶기·풀기. 이 네 가지 방식이 인쇄소를 지탱하는 뼈대이자, 모든 작업의 출발점입니다.</p></div>
+      <div class="pg-card"><div class="no">03</div><div class="big">만들고, 남기고</div><p>워크샵에서 만들어진 책들은 아카이브로 쌓여, 다음 실험과 다음 책의 참고가 됩니다.</p></div>
     </div>`},
   program:{ed:"TIPS · BINDING PROGRAM",html:`
     <div class="pg-hero">
@@ -690,15 +711,15 @@ const PAGES={
     </div>`},
   contact:{ed:"TIPS · CONTACT",html:`
     <div class="pg-hero">
-      <div class="pg-eyebrow">Contact · 연락처</div>
+      <div class="pg-eyebrow">Contact — 연락처</div>
       <h1 class="pg-title">찾아오기<em>say hello</em></h1>
       <p class="pg-lead">제본 상담, 워크샵 신청, 협업 제안 모두 환영합니다. 작업 중일 수 있으니 방문 전에 연락 주세요.</p>
     </div>
-    <div class="pg-cols">
-      <div class="pg-card"><h4>Email</h4><div class="big">hello@tips.paper</div><p>견적·워크샵·협업 문의</p></div>
-      <div class="pg-card"><h4>Instagram</h4><div class="big">@tips.paperservice</div><p>작업 과정과 아카이브 기록</p></div>
-      <div class="pg-card"><h4>Studio</h4><div class="big">서울 어딘가, 2F</div><p>방문은 예약제로 운영합니다</p></div>
-      <div class="pg-card"><h4>Hours</h4><div class="big">화–토 11:00–19:00</div><p>일·월 휴무 · 워크샵은 별도 공지</p></div>
+    <div class="pg-index">
+      <a class="pg-row sm" href="mailto:hello@tips.paper"><span class="r-no">@</span><span class="r-ko">hello@tips.paper</span><span class="r-meta">EMAIL<br><i>“견적 · 워크샵 · 협업”</i></span><span class="r-arrow">→</span></a>
+      <a class="pg-row sm" href="https://instagram.com/tips.paperservice" target="_blank" rel="noopener"><span class="r-no">IG</span><span class="r-ko">@tips.paperservice</span><span class="r-meta">INSTAGRAM<br><i>“작업 과정과 아카이브”</i></span><span class="r-arrow">→</span></a>
+      <div class="pg-row sm"><span class="r-no">ST</span><span class="r-ko">서울 어딘가, 2F</span><span class="r-meta">STUDIO<br><i>“방문은 예약제”</i></span><span class="r-arrow">→</span></div>
+      <div class="pg-row sm"><span class="r-no">HR</span><span class="r-ko">화–토 11:00–19:00</span><span class="r-meta">HOURS<br><i>“일 · 월 휴무”</i></span><span class="r-arrow">→</span></div>
     </div>`},
 };
 function openPage(name){
@@ -977,7 +998,7 @@ function ordBuild(){
 }
 function openDetail(idx){
   const b=BOOKS[idx];
-  document.getElementById("dtNum").textContent=b.no+" / 0"+BOOKS.length;
+  document.getElementById("dtNum").textContent=["I","II","III","IV"][idx]+" — "+b.en;
   document.getElementById("dtTitle").innerHTML=b.t[0]+"<em>"+b.en.toLowerCase()+"</em>";
   document.getElementById("dtLead").textContent=b.lead;
   document.getElementById("dtWays").innerHTML=b.ways.map(w=>"<span>"+w+"</span>").join("");
@@ -1000,9 +1021,11 @@ function lerp(a,b,t){return a+(b-a)*t;}
 let curIdx=-1;
 function updateOverlay(idx){
   if(idx===curIdx)return;curIdx=idx;const b=BOOKS[idx];
-  document.getElementById("btitle").innerHTML=
-    '<span class="tline"><span class="tin">'+b.t[0]+'</span></span>'+
-    '<em><span class="tin tin2">'+b.en.toLowerCase()+'</span></em>';
+  document.getElementById("hkr").innerHTML=
+    '<span class="tline"><span class="tin">'+b.t[0]+'</span></span>';
+  document.getElementById("hen").innerHTML=
+    '<span class="tline"><span class="tin tin2">'+b.en.toLowerCase()+'</span></span>';
+  document.getElementById("hlab").textContent="№ 0"+(idx+1)+" — "+b.spine;
   const bd=document.getElementById("bdesc");
   bd.textContent=b.desc;
   bd.classList.remove("din");void bd.offsetWidth;bd.classList.add("din");
