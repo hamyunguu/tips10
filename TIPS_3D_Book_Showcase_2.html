@@ -176,11 +176,57 @@
   .pg-prog{cursor:pointer;background:var(--paper-2);border:none;border-radius:10px;padding:26px;transition:background .3s,transform .3s;}
   .pg-prog:hover{background:var(--blue-200);transform:translateY(-4px);}
   .pg-view{display:inline-block;margin-top:16px;font-family:"Futura PT",sans-serif;font-size:11px;letter-spacing:2px;color:var(--blue-deep);}
+  /* ===== order builder ===== */
+  .ord-wrap{display:grid;grid-template-columns:minmax(330px,440px) 1fr;gap:36px;padding:8px 40px 110px;max-width:1440px;width:100%;align-items:start;}
+  .ord-form{display:flex;flex-direction:column;gap:26px;}
+  .ord-sec{border-top:1px solid rgba(20,27,46,.16);padding-top:16px;}
+  .ord-sec h5{font-family:"Futura PT",sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--blue-deep);margin-bottom:12px;font-weight:500;}
+  .ord-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;align-items:center;}
+  .fld{font-size:12px;opacity:.55;width:100%;margin:6px 0 -2px;}
+  .chip{
+    font-family:"Neue Haas Grotesk","Noto Sans KR",sans-serif;font-weight:500;font-size:13.5px;
+    padding:9px 16px;border-radius:40px;border:1px solid rgba(20,27,46,.22);cursor:pointer;
+    background:transparent;color:var(--ink);transition:border-color .2s,background .2s,color .2s;
+  }
+  .chip:hover{border-color:var(--blue-deep);}
+  .chip.on{background:var(--ink);border-color:var(--ink);color:var(--paper);}
+  .ord-input,.ord-num{
+    font-family:"Neue Haas Grotesk","Noto Sans KR",sans-serif;font-size:14.5px;color:var(--ink);
+    background:transparent;border:none;border-bottom:1px solid rgba(20,27,46,.3);
+    padding:8px 2px;outline:none;transition:border-color .2s;border-radius:0;
+  }
+  .ord-input:focus,.ord-num:focus{border-color:var(--blue-deep);}
+  .ord-input{width:100%;}
+  .ord-num{width:84px;text-align:center;}
+  .ord-file{font-size:12.5px;font-family:"Noto Sans KR",sans-serif;}
+  .ord-note{font-size:12px;opacity:.55;line-height:1.6;margin-top:8px;word-break:keep-all;}
+  .ord-quote{background:var(--paper-2);border-radius:12px;padding:22px;}
+  .ord-quote .ln{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;opacity:.8;}
+  .ord-quote .tot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid rgba(20,27,46,.18);margin-top:10px;padding-top:12px;}
+  .ord-quote .tot b{font-size:26px;letter-spacing:-.5px;}
+  .ord-quote .vat{font-size:11px;opacity:.5;margin-top:8px;line-height:1.6;}
+  .ord-preview{
+    position:sticky;top:84px;height:calc(100vh - 150px);min-height:420px;
+    background:linear-gradient(160deg,var(--paper-2),var(--blue-200));
+    border-radius:14px;overflow:hidden;
+  }
+  .ord-preview canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab;}
+  .ord-hud{
+    position:absolute;left:22px;bottom:20px;pointer-events:none;
+    font-family:"Futura PT",sans-serif;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;
+    color:var(--ink);line-height:1.8;
+  }
+  .ord-hud b{font-family:"Neue Haas Grotesk","Noto Sans KR",sans-serif;font-size:16px;letter-spacing:0;display:block;font-weight:700;}
+  .ord-hud .drag{opacity:.45;}
+  @media(max-width:960px){
+    .ord-wrap{grid-template-columns:1fr;}
+    .ord-preview{position:relative;top:0;height:50vh;min-height:320px;order:-1;}
+  }
   @media(max-width:720px){
     nav.menu{gap:16px;}
     nav.menu a{font-size:10px;letter-spacing:1.5px;}
     .idx-title{max-width:70vw;}
-    .dt-hero,.dt-portfolio,.pg-hero,.pg-cols{padding-left:24px;padding-right:24px;}
+    .dt-hero,.dt-portfolio,.pg-hero,.pg-cols,.ord-wrap{padding-left:24px;padding-right:24px;}
   }
 </style>
 </head>
@@ -520,17 +566,53 @@ const PAGES={
       ${BOOKS.map((b,i)=>`<div class="pg-card pg-prog" data-prog="${i}"><h4>${b.no} · ${b.en}</h4><div class="big">${b.t[0]} <span class="av">${b.en.toLowerCase()}</span></div><p>${b.desc}</p><span class="pg-view">VIEW →</span></div>`).join("")}
     </div>`},
   order:{ed:"TIPS · ORDER",html:`
-    <div class="pg-hero">
-      <div class="pg-eyebrow">Order · 주문 안내</div>
-      <h1 class="pg-title">주문 플로우<em>how to order</em></h1>
-      <p class="pg-lead">모든 주문은 대화에서 시작합니다. 어떤 내용을, 어떤 방식으로 엮고 싶은지 알려주시면 샘플과 견적으로 답합니다.</p>
-      <a class="pg-btn" href="mailto:hello@tips.paper">견적 문의하기</a>
+    <div class="pg-hero" style="padding-bottom:6px;">
+      <div class="pg-eyebrow">Order · 주문 제작</div>
+      <h1 class="pg-title">주문하기<em>build your book</em></h1>
+      <p class="pg-lead">사양을 고르면 3D 모형이 실제 만들어질 책의 구조로 바뀝니다. 견적은 실시간 예상가이며, 파일 검수 후 확정됩니다.</p>
     </div>
-    <div class="pg-cols">
-      <div class="pg-card"><div class="no">01</div><div class="big">방식 선택</div><p>잇기·꿰기·묶기·풀기 중 책의 내용과 쓰임에 맞는 제본 방식을 함께 고릅니다.</p></div>
-      <div class="pg-card"><div class="no">02</div><div class="big">사양 결정</div><p>판형·종이·페이지 수·부수를 정합니다. 종이 샘플북에서 직접 만져보고 고를 수 있습니다.</p></div>
-      <div class="pg-card"><div class="no">03</div><div class="big">샘플 · 견적</div><p>한 부를 먼저 테스트 제본해 확인한 뒤, 확정 사양으로 견적을 회신합니다.</p></div>
-      <div class="pg-card"><div class="no">04</div><div class="big">제작 · 수령</div><p>제작 기간은 사양에 따라 5–14일. 완성본은 방문 수령 또는 배송으로 전달합니다.</p></div>
+    <div class="ord-wrap">
+      <div class="ord-form">
+        <div class="ord-sec"><h5>01 · 주문 제목</h5>
+          <input class="ord-input" id="oTitle" maxlength="40" placeholder="예: 워크샵 결과물 — 나의 첫 책">
+        </div>
+        <div class="ord-sec"><h5>02 · 제본 방식</h5>
+          <div class="ord-row" id="oBind"></div>
+          <div id="oRingRow" style="display:none;"><div class="fld">링 색상</div><div class="ord-row" id="oRing"></div></div>
+        </div>
+        <div class="ord-sec"><h5>03 · 판형</h5>
+          <div class="ord-row" id="oSize"></div>
+          <div class="ord-row" id="oCustomRow" style="display:none;">
+            <input class="ord-num" id="oCw" type="number" min="90" max="310" value="148"> ×
+            <input class="ord-num" id="oCh" type="number" min="90" max="440" value="210"> mm
+          </div>
+        </div>
+        <div class="ord-sec"><h5>04 · 표지</h5>
+          <div class="fld">용지</div><div class="ord-row" id="oCvPaper"></div>
+          <div class="fld">인쇄</div><div class="ord-row" id="oCvPrint"></div>
+          <div class="fld">코팅</div><div class="ord-row" id="oCoat"></div>
+        </div>
+        <div class="ord-sec"><h5>05 · 내지</h5>
+          <div class="fld">용지</div><div class="ord-row" id="oInPaper"></div>
+          <div class="fld">인쇄</div><div class="ord-row" id="oInPrint"></div>
+          <div class="fld">페이지 수 · 8–400, 4의 배수</div>
+          <div class="ord-row"><input class="ord-num" id="oPages" type="number" min="8" max="400" step="4" value="64"> p</div>
+        </div>
+        <div class="ord-sec"><h5>06 · 수량</h5>
+          <div class="ord-row"><input class="ord-num" id="oQty" type="number" min="1" max="2000" value="10"> 부</div>
+          <p class="ord-note">50부 이상 15% · 100부 이상 25% · 300부 이상 35% 할인</p>
+        </div>
+        <div class="ord-sec"><h5>07 · 인쇄 파일</h5>
+          <input type="file" id="oFile" class="ord-file" accept=".pdf,.ai,.zip">
+          <p class="ord-note">재단 여백 3mm 포함 PDF 권장 · 파일 없이 먼저 접수해도 됩니다.</p>
+        </div>
+        <div class="ord-quote" id="oQuote"></div>
+        <button class="pg-btn" id="oSubmit" style="border:none;cursor:pointer;align-self:flex-start;">주문 접수하기</button>
+      </div>
+      <div class="ord-preview">
+        <canvas id="ordCanvas"></canvas>
+        <div class="ord-hud"><b id="oHudA"></b><span id="oHudB"></span><br><span class="drag">드래그해서 돌려보기</span></div>
+      </div>
     </div>`},
   contact:{ed:"TIPS · CONTACT",html:`
     <div class="pg-hero">
@@ -548,6 +630,7 @@ const PAGES={
 function openPage(name){
   const p=PAGES[name];if(!p)return;
   if(DETAIL_OPEN)closeDetail();
+  ordTeardown();
   document.getElementById("pgEd").textContent=p.ed;
   document.getElementById("pgBody").innerHTML=p.html;
   document.querySelectorAll("#pgBody .pg-prog").forEach(el=>{
@@ -556,11 +639,267 @@ function openPage(name){
   const d=document.getElementById("page");
   d.classList.add("open");d.setAttribute("aria-hidden","false");d.scrollTop=0;
   PAGE_OPEN=true;
+  if(name==="order")ordInitUI();
 }
 function closePage(){
+  ordTeardown();
   const d=document.getElementById("page");
   d.classList.remove("open");d.setAttribute("aria-hidden","true");
   PAGE_OPEN=false;
+}
+
+// ========== ORDER BUILDER ==========
+const ORD_OPT={
+  bind:[{k:"잇기 · 아코디언",fee:1800},{k:"꿰기 · 사철",fee:2500},{k:"묶기 · 링",fee:2200},{k:"풀기 · 낱장",fee:1500}],
+  ring:[{k:"실버",c:0xc9ced6},{k:"블랙",c:0x2a2d36},{k:"화이트",c:0xf0f1f3}],
+  size:[{k:"A6",w:105,h:148},{k:"A5",w:148,h:210},{k:"B5",w:182,h:257},{k:"A4",w:210,h:297},{k:"정사각",w:150,h:150},{k:"직접 입력",custom:true}],
+  cvPaper:[
+    {k:"스노우 250g",c:"#f4f6f8",cost:900},
+    {k:"아트지 300g",c:"#f0f1f2",cost:1000},
+    {k:"랑데뷰 240g",c:"#f6f3ec",cost:1300},
+    {k:"크라프트 300g",c:"#b28d5f",cost:1100},
+    {k:"반누보 206g",c:"#f3efe6",cost:1600}],
+  cvPrint:[{k:"컬러 4도",cost:400},{k:"먹 1도",cost:150}],
+  coat:[{k:"무광 코팅",cost:300,rough:.6},{k:"유광 코팅",cost:280,rough:.28},{k:"코팅 없음",cost:0,rough:.92}],
+  inPaper:[
+    {k:"모조지 80g",t:.05,c:"#f6f7f4",rate:22},
+    {k:"모조지 100g",t:.062,c:"#f6f7f4",rate:26},
+    {k:"아트지 90g",t:.055,c:"#f1f2f2",rate:30},
+    {k:"크라프트 80g",t:.06,c:"#c8a878",rate:28}],
+  inPrint:[{k:"컬러 양면",m:2.2},{k:"흑백 양면",m:1}],
+};
+const ORD={bind:0,ring:0,size:1,cw:148,ch:210,cvPaper:0,cvPrint:0,coat:2,inPaper:0,inPrint:0,pages:64,qty:10,title:"",file:""};
+let ordR=null;
+
+function ordDims(){
+  const sz=ORD_OPT.size[ORD.size];
+  const W=sz.custom?ORD.cw:sz.w, H=sz.custom?ORD.ch:sz.h;
+  const T=ORD.pages*ORD_OPT.inPaper[ORD.inPaper].t+0.8; // spine mm incl. cover
+  return {W,H,T};
+}
+function ordChips(id,arr,key){
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML=arr.map((o,i)=>`<button class="chip${i===ORD[key]?" on":""}" data-i="${i}">${o.k}</button>`).join("");
+  el.querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{
+    ORD[key]=+b.dataset.i;
+    el.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on",+c.dataset.i===ORD[key]));
+    if(key==="bind")document.getElementById("oRingRow").style.display=ORD.bind===2?"block":"none";
+    if(key==="size")document.getElementById("oCustomRow").style.display=ORD_OPT.size[ORD.size].custom?"flex":"none";
+    ordRefresh();
+  }));
+}
+function ordNum(id,key,fix){
+  const el=document.getElementById(id);if(!el)return;
+  el.addEventListener("change",()=>{
+    let v=+el.value||+el.min;
+    v=Math.max(+el.min,Math.min(+el.max,v));
+    if(fix)v=Math.round(v/fix)*fix;
+    el.value=v;ORD[key]=v;ordRefresh();
+  });
+}
+function ordInitUI(){
+  ordChips("oBind",ORD_OPT.bind,"bind");
+  ordChips("oRing",ORD_OPT.ring,"ring");
+  ordChips("oSize",ORD_OPT.size,"size");
+  ordChips("oCvPaper",ORD_OPT.cvPaper,"cvPaper");
+  ordChips("oCvPrint",ORD_OPT.cvPrint,"cvPrint");
+  ordChips("oCoat",ORD_OPT.coat,"coat");
+  ordChips("oInPaper",ORD_OPT.inPaper,"inPaper");
+  ordChips("oInPrint",ORD_OPT.inPrint,"inPrint");
+  ordNum("oPages","pages",4);ordNum("oQty","qty");ordNum("oCw","cw");ordNum("oCh","ch");
+  document.getElementById("oRingRow").style.display=ORD.bind===2?"block":"none";
+  document.getElementById("oCustomRow").style.display=ORD_OPT.size[ORD.size].custom?"flex":"none";
+  const t=document.getElementById("oTitle");
+  t.value=ORD.title;
+  t.addEventListener("input",()=>{ORD.title=t.value;});
+  t.addEventListener("change",()=>ordBuild());
+  document.getElementById("oFile").addEventListener("change",e=>{
+    ORD.file=e.target.files[0]?e.target.files[0].name:"";
+  });
+  document.getElementById("oSubmit").addEventListener("click",ordSubmit);
+  ordInit3D();
+  ordRefresh();
+}
+function ordPrice(){
+  const per=ORD_OPT.cvPaper[ORD.cvPaper].cost+ORD_OPT.cvPrint[ORD.cvPrint].cost
+    +ORD_OPT.coat[ORD.coat].cost+ORD_OPT.bind[ORD.bind].fee
+    +ORD.pages*ORD_OPT.inPaper[ORD.inPaper].rate*ORD_OPT.inPrint[ORD.inPrint].m;
+  let disc=1;if(ORD.qty>=300)disc=.65;else if(ORD.qty>=100)disc=.75;else if(ORD.qty>=50)disc=.85;
+  const base=30000;
+  const total=Math.round((base+per*ORD.qty*disc)/100)*100;
+  return {per:Math.round(per),disc,total};
+}
+function ordRefresh(){
+  const {per,disc,total}=ordPrice();
+  const q=document.getElementById("oQuote");
+  if(q)q.innerHTML=
+    `<div class="ln"><span>기본 준비비</span><span>₩30,000</span></div>`+
+    `<div class="ln"><span>부당 단가</span><span>₩${per.toLocaleString()}</span></div>`+
+    `<div class="ln"><span>수량</span><span>${ORD.qty}부${disc<1?` · 할인 ${Math.round((1-disc)*100)}%`:""}</span></div>`+
+    `<div class="tot"><span>예상 견적</span><b>₩${total.toLocaleString()}</b></div>`+
+    `<div class="vat">부가세 별도 · 파일 검수 후 확정 · 접수 후 5–14 영업일 출고</div>`;
+  const {W,H,T}=ordDims();
+  const a=document.getElementById("oHudA"),b=document.getElementById("oHudB");
+  if(a)a.textContent=ORD_OPT.bind[ORD.bind].k+" · "+ORD_OPT.size[ORD.size].k;
+  if(b)b.textContent=`${W}×${H} mm · ${ORD.pages}p · 책등 약 ${T.toFixed(1)}mm`;
+  ordBuild();
+}
+function ordSubmit(){
+  const {W,H,T}=ordDims(),{per,disc,total}=ordPrice();
+  const L=[
+    "── TiPS 주문 접수 ──",
+    "제목: "+(ORD.title||"(제목 없음)"),
+    "제본: "+ORD_OPT.bind[ORD.bind].k+(ORD.bind===2?" · 링 "+ORD_OPT.ring[ORD.ring].k:""),
+    "판형: "+ORD_OPT.size[ORD.size].k+` (${W}×${H}mm)`,
+    "표지: "+ORD_OPT.cvPaper[ORD.cvPaper].k+" · "+ORD_OPT.cvPrint[ORD.cvPrint].k+" · "+ORD_OPT.coat[ORD.coat].k,
+    "내지: "+ORD_OPT.inPaper[ORD.inPaper].k+" · "+ORD_OPT.inPrint[ORD.inPrint].k+" · "+ORD.pages+"p",
+    "수량: "+ORD.qty+"부",
+    "예상 견적: ₩"+total.toLocaleString()+" (부가세 별도)",
+    "파일: "+(ORD.file||"추후 이메일 첨부"),
+  ];
+  location.href="mailto:hello@tips.paper?subject="+encodeURIComponent("[주문접수] "+(ORD.title||"제목 없음"))
+    +"&body="+encodeURIComponent(L.join("\n"));
+}
+
+// ---------- order 3D preview ----------
+function ordInit3D(){
+  const cv=document.getElementById("ordCanvas");if(!cv)return;
+  const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(34,1,0.1,100);
+  scene.add(new THREE.AmbientLight(0xffffff,.7));
+  const k=new THREE.DirectionalLight(0xffffff,1.05);k.position.set(4,7,8);scene.add(k);
+  const r2=new THREE.DirectionalLight(0xffffff,.4);r2.position.set(-6,2,4);scene.add(r2);
+  const group=new THREE.Group();scene.add(group);
+  ordR={renderer,scene,camera,group,raf:0,rotY:-.55,rotX:.14,drag:null,auto:true};
+  cv.addEventListener("pointerdown",e=>{if(!ordR)return;ordR.drag={x:e.clientX,y:e.clientY};ordR.auto=false;cv.setPointerCapture(e.pointerId);cv.style.cursor="grabbing";});
+  cv.addEventListener("pointermove",e=>{if(!ordR||!ordR.drag)return;
+    ordR.rotY+=(e.clientX-ordR.drag.x)*.006;
+    ordR.rotX=Math.max(-.9,Math.min(.9,ordR.rotX+(e.clientY-ordR.drag.y)*.004));
+    ordR.drag={x:e.clientX,y:e.clientY};});
+  const up=()=>{if(ordR){ordR.drag=null;cv.style.cursor="grab";}};
+  cv.addEventListener("pointerup",up);cv.addEventListener("pointercancel",up);
+  ordR.onWin=()=>ordSize3D();addEventListener("resize",ordR.onWin);
+  ordSize3D();
+  const loop=()=>{if(!ordR)return;
+    if(ordR.auto)ordR.rotY+=.0035;
+    group.rotation.y=ordR.rotY;group.rotation.x=ordR.rotX;
+    renderer.render(scene,camera);
+    ordR.raf=requestAnimationFrame(loop);};
+  loop();
+}
+function ordSize3D(){
+  if(!ordR)return;
+  const box=ordR.renderer.domElement.parentElement;if(!box)return;
+  const w=box.clientWidth||600,h=box.clientHeight||420;
+  ordR.renderer.setSize(w,h,false);
+  ordR.camera.aspect=w/h;ordR.camera.updateProjectionMatrix();
+}
+function ordTeardown(){
+  if(!ordR)return;
+  cancelAnimationFrame(ordR.raf);
+  removeEventListener("resize",ordR.onWin);
+  ordClearGroup(ordR.group);
+  ordR.renderer.dispose();
+  ordR=null;
+}
+function ordClearGroup(g){
+  g.traverse(o=>{if(o.isMesh){o.geometry.dispose();(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{if(m.map)m.map.dispose();m.dispose();});}});
+  while(g.children.length)g.remove(g.children[0]);
+}
+function ordCoverTex(Wmm,Hmm){
+  const cvp=ORD_OPT.cvPaper[ORD.cvPaper], mono=ORD.cvPrint===1;
+  const w=440,h=Math.max(300,Math.min(760,Math.round(440*Hmm/Wmm)));
+  const c=rc(w,h),ctx=c.getContext("2d");
+  paperFill(ctx,w,h,cvp.c);
+  const dark=ORD.cvPaper===3; // kraft
+  const fg=dark?"#2a2318":PALETTE.ink;
+  const accent=mono?fg:(dark?"#f3ead9":PALETTE.blueDeep);
+  ctx.strokeStyle=fg;ctx.globalAlpha=.45;ctx.lineWidth=2;ctx.strokeRect(22,22,w-44,h-44);ctx.globalAlpha=1;
+  ctx.fillStyle=fg;ctx.font="800 34px 'Neue Haas Grotesk',sans-serif";ctx.fillText("T",40,72);
+  ctx.fillStyle=accent;ctx.font="700 34px 'Avara',serif";ctx.fillText("i",64,72);
+  ctx.fillStyle=fg;ctx.font="800 34px 'Neue Haas Grotesk',sans-serif";ctx.fillText("PS",82,72);
+  ctx.font="500 15px 'Futura PT',sans-serif";ctx.textAlign="right";
+  ctx.fillText("№ "+String(ORD.pages).padStart(3,"0"),w-40,68);ctx.textAlign="left";
+  ctx.fillStyle=fg;ctx.font="700 34px 'Noto Sans KR',sans-serif";
+  wrap(ctx,ORD.title||"당신의 책",40,h*.5,w-80,44);
+  ctx.fillStyle=accent;ctx.font="500 15px 'Futura PT',sans-serif";
+  ctx.fillText(ORD_OPT.bind[ORD.bind].k.toUpperCase(),40,h-56);
+  ctx.fillStyle=fg;ctx.globalAlpha=.6;ctx.font="400 13px 'Futura PT',sans-serif";
+  ctx.fillText("TIPS BINDING PROGRAM",40,h-34);ctx.globalAlpha=1;
+  const tx=new THREE.CanvasTexture(c);tx.anisotropy=8;return tx;
+}
+function ordMats(Wmm,Hmm){
+  const rough=ORD_OPT.coat[ORD.coat].rough;
+  const cover=new THREE.MeshStandardMaterial({map:ordCoverTex(Wmm,Hmm),roughness:rough,metalness:ORD.coat===1?.12:.02});
+  const coverBack=new THREE.MeshStandardMaterial({color:ORD_OPT.cvPaper[ORD.cvPaper].c,roughness:rough,metalness:.02});
+  const page=new THREE.MeshStandardMaterial({color:ORD_OPT.inPaper[ORD.inPaper].c,roughness:1,metalness:0});
+  return {cover,coverBack,page};
+}
+function ordBuild(){
+  if(!ordR)return;
+  ordClearGroup(ordR.group);
+  const {W:Wmm,H:Hmm,T:Tmm}=ordDims();
+  const S=1/60, w=Wmm*S, h=Hmm*S;
+  const d=Math.max(.14,Tmm*S*4); // thickness exaggerated ×4 for readability
+  const {cover,coverBack,page}=ordMats(Wmm,Hmm);
+  const inner=new THREE.Group();
+  const bind=ORD.bind;
+  if(bind===0){ // 잇기 — accordion zigzag
+    const nP=6,a=.5,pw=w*.92,td=.024;
+    for(let i=0;i<nP;i++){
+      const geo=new THREE.BoxGeometry(pw,h,td);
+      const m=i===0?cover:page;
+      const mesh=new THREE.Mesh(geo,Array.isArray(m)?m:[page,page,page,page,m,i===0?coverBack:page]);
+      const x0=i*pw*Math.cos(a), x1=(i+1)*pw*Math.cos(a);
+      mesh.position.x=(x0+x1)/2;
+      mesh.position.z=(i%2?-1:1)*pw*Math.sin(a)/2;
+      mesh.rotation.y=(i%2?1:-1)*a;
+      inner.add(mesh);
+    }
+  }else if(bind===3){ // 풀기 — loose stack
+    const nL=8,ld=Math.max(.03,d/8);
+    for(let i=0;i<nL;i++){
+      const geo=new THREE.BoxGeometry(w,h,ld);
+      const front=i===nL-1;
+      const mesh=new THREE.Mesh(geo,[page,page,page,page,front?cover:page,i===0?coverBack:page]);
+      mesh.position.z=(i-(nL-1)/2)*(ld+.012);
+      mesh.rotation.z=(Math.sin(i*2.7)*.05);
+      mesh.position.x=Math.sin(i*1.9)*.07;
+      mesh.position.y=Math.cos(i*2.3)*.05;
+      inner.add(mesh);
+    }
+  }else{ // 꿰기 / 묶기 — solid book + hardware
+    const geo=new THREE.BoxGeometry(w,h,d);
+    const spine=new THREE.MeshStandardMaterial({color:ORD_OPT.cvPaper[ORD.cvPaper].c,roughness:.85});
+    inner.add(new THREE.Mesh(geo,[page,spine,page,page,cover,coverBack]));
+    if(bind===1){ // stitches
+      const th=new THREE.MeshStandardMaterial({color:0xead9c0,roughness:.75});
+      for(let i=0;i<5;i++){
+        const cy=new THREE.Mesh(new THREE.CylinderGeometry(.016,.016,d*.96,10),th);
+        cy.rotation.x=Math.PI/2;
+        cy.position.set(-w/2-.008,(i-(5-1)/2)*(h*.16),0);
+        inner.add(cy);
+      }
+    }else{ // rings
+      const rm=new THREE.MeshStandardMaterial({color:ORD_OPT.ring[ORD.ring].c,roughness:.3,metalness:ORD.ring===0?.85:.4});
+      const R=Math.max(.13,d*.78);
+      for(let i=0;i<4;i++){
+        const tor=new THREE.Mesh(new THREE.TorusGeometry(R,.022,10,36),rm);
+        tor.rotation.x=Math.PI/2;
+        tor.position.set(-w/2,(i-(4-1)/2)*(h*.2),0);
+        inner.add(tor);
+      }
+    }
+  }
+  const bb=new THREE.Box3().setFromObject(inner);
+  const c=bb.getCenter(new THREE.Vector3());
+  inner.position.sub(c);
+  ordR.group.add(inner);
+  const sph=bb.getBoundingSphere(new THREE.Sphere());
+  ordR.camera.position.set(0,0,sph.radius/Math.tan(.5*ordR.camera.fov*Math.PI/180)*1.3);
+  ordR.camera.lookAt(0,0,0);
 }
 function openDetail(idx){
   const b=BOOKS[idx];
